@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/Prajeeth/chatbot-sentiment/mlruns/0/adaec5f8fa1f404abdc30400a2b982c9/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: adaec5f8fa1f404abdc30400a2b982c9
+run_name: ./results
+run_uuid: adaec5f8fa1f404abdc30400a2b982c9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1724853668361
+status: 1
+tags: []
+user_id: Prajeeth

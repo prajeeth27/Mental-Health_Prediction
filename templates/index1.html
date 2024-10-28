@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress Level Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="number"], input[type="submit"] {
+            padding: 8px;
+            margin: 5px 0;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stress Level Prediction</h1>
+    <form action="/predict" method="post">
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required><br>
+
+        <label for="gender">Gender (0 for Female, 1 for Male):</label>
+        <input type="number" id="gender" name="gender" required><br>
+
+        <label for="year_of_study">Year of Study:</label>
+        <input type="number" id="year_of_study" name="year_of_study" required><br>
+
+        <label for="gpa">GPA:</label>
+        <input type="number" step="0.01" id="gpa" name="gpa" required><br>
+
+        <label for="study_hours">Study Hours per Week:</label>
+        <input type="number" id="study_hours" name="study_hours" required><br>
+
+        <label for="assignments">Assignments per Week:</label>
+        <input type="number" id="assignments" name="assignments" required><br>
+
+        <label for="class_attendance">Class Attendance (0-5 scale):</label>
+        <input type="number" id="class_attendance" name="class_attendance" required><br>
+
+        <label for="academic_pressure">Academic Pressure (0-5 scale):</label>
+        <input type="number" id="academic_pressure" name="academic_pressure" required><br>
+
+        <label for="social_support">Social Support (0-5 scale):</label>
+        <input type="number" id="social_support" name="social_support" required><br>
+
+        <label for="sleep_hours">Hours of Sleep per Night:</label>
+        <input type="number" id="sleep_hours" name="sleep_hours" required><br>
+
+        <input type="submit" value="Predict Stress Level">
+    </form>
+</body>
+</html>

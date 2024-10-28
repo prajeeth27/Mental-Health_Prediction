@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood and Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+            scroll-behavior: smooth;
+        }
+        header {
+            background: #1f1f1f;
+            color: #e0e0e0;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .profile img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            border: 4px solid #1e90ff;
+            margin-right: 15px;
+        }
+        .profile h2 {
+            margin: 0;
+            color: #1e90ff;
+        }
+        .button {
+            display: inline-block;
+            font-size: 16px;
+            color: #e0e0e0;
+            background: #1e90ff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background: #e0e0e0;
+            color: #1e90ff;
+            border-color: #1e90ff;
+        }
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px 0;
+            display: none; /* Initially hidden */
+        }
+        #video {
+            border: 4px solid #1e90ff;
+            box-shadow: 0 0 20px rgba(30, 144, 255, 0.5);
+            border-radius: 10px;
+            width: 100%;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #ff6f61;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-button:hover {
+            color: #ff4b3e;
+        }
+        .chat-box {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin: 20px 0;
+            width: 100%;
+            max-width: 600px;
+        }
+        .chat-box h2 {
+            margin: 0;
+            color: #1e90ff;
+        }
+        .chat-box p {
+            margin: 10px 0;
+            color: #b0b0b0;
+        }
+        .chat-input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #1e90ff;
+            background: #2e2e2e;
+            color: #e0e0e0;
+            outline: none;
+        }
+        .chat-input:focus {
+            border-color: #1e90ff;
+            box-shadow: 0 0 5px rgba(30, 144, 255, 0.5);
+        }
+        .result {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .result h3 {
+            color: #1e90ff;
+        }
+        .result p {
+            font-size: 18px;
+        }
+        .result a {
+            display: block;
+            color: #1e90ff;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        .result a:hover {
+            text-decoration: underline;
+        }
+        #playlist-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #playlist-button:hover {
+            background: #1c86ee;
+        }
+
+        #playlist-container {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background: #333;
+            color: #fff;
+            box-shadow: -4px 0 8px rgba(0, 0, 0, 0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            padding: 20px;
+        }
+
+        #playlist-container.show {
+            transform: translateX(0);
+        }
+
+        #close-playlist {
+            background: transparent;
+            color: #ff6f61;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        #close-playlist:hover {
+            color: #ff4b3e;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+        .chat-box {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin: 20px 0;
+            width: 100%;
+            max-width: 600px;
+        }
+        #predict-stress {
+            background-color: #f4f4f9; /* Light gray background */
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+        #predict-stress h2 {
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #stress-form label {
+            font-size: 14px;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        #stress-form input[type="number"],
+        #stress-form input[type="text"],
+        #stress-form select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background-color: #fff;
+        }
+        #stress-form .button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #stress-form .button:hover {
+            background-color: #45a049;
+        }
+        #predictionForm {
+            display: none; /* Hide form initially */
+        }
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Mood and Sentiment Analysis</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile">
+            <h2>Welcome to Mood Analyzer</h2>
+        </div>
+        
+        <button class="button" onclick="startMoodDetection()">Start Mood Detection</button>
+        <button class="button" onclick="analyzeSentiment()">Analyze Sentiment</button>
+         <!-- Button to reveal the prediction form -->
+    <a href="#" onclick="showForm()">Start Stress Prediction</a>
+
+    <!-- Prediction Form -->
+    <form id="predictionForm" action="/predict" method="POST">
+        <label for="age">What is your age?</label>
+        <input type="number" id="age" name="what_is_your_age?" required><br>
+
+        <label for="yearOfStudy">What is your current year of study?</label>
+        <input type="number" id="yearOfStudy" name="what_is_your_current_year_of_study?" required><br>
+
+        <label for="gpa">What is your current GPA or average grade?</label>
+        <input type="number" step="0.1" id="gpa" name="what_is_your_current_gpa_or_average_grade?" required><br>
+
+        <label for="studyHours">How many hours do you study per week?</label>
+        <input type="number" id="studyHours" name="how_many_hours_do_you_study_per_week?" required><br>
+
+        <label for="assignments">How many assignments or deadlines do you have each week?</label>
+        <input type="number" id="assignments" name="how_many_assignments_or_deadlines_do_you_have_each_week?" required><br>
+
+        <label for="pressure">How much academic pressure do you feel? (1-5)</label>
+        <input type="number" id="pressure" name="how_much_academic_pressure_do_you_feel?" min="1" max="5" required><br>
+
+        <label for="socialSupport">How would you rate your level of social support? (1-5)</label>
+        <input type="number" id="socialSupport" name="how_would_you_rate_your_level_of_social_support?" min="1" max="5" required><br>
+
+        <label for="sleepQuality">How would you rate your sleep quality? (1-5)</label>
+        <input type="number" id="sleepQuality" name="how_would_you_rate_your_sleep_quality?" min="1" max="5" required><br>
+
+        <label for="sleepHours">How many hours of sleep do you get per night?</label>
+        <input type="number" id="sleepHours" name="how_many_hours_of_sleep_do_you_get_per_night?" required><br>
+
+        <label for="dietQuality">How would you rate the quality of your diet? (1-5)</label>
+        <input type="number" id="dietQuality" name="how_would_you_rate_the_quality_of_your_diet?" min="1" max="5" required><br>
+
+        <label for="screenTime">How many hours do you spend on screens per day?</label>
+        <input type="number" id="screenTime" name="how_many_hours_do_you_spend_on_screens_phone_computer_tv_per_day?" required><br>
+
+        <label for="anxiety">How would you rate your anxiety levels? (1-5)</label>
+        <input type="number" id="anxiety" name="how_would_you_rate_your_anxiety_levels?" min="1" max="5" required><br>
+
+        <label for="depression">How would you rate your depression symptoms? (1-5)</label>
+        <input type="number" id="depression" name="how_would_you_rate_your_depression_symptoms?" min="1" max="5" required><br>
+
+        <label for="major">What is your major or field of study?</label>
+        <input type="text" id="major" name="what_is_your_major_or_field_of_study?" required><br>
+
+        <label for="attendance">How often do you attend classes?</label>
+        <input type="text" id="attendance" name="how_often_do_you_attend_classes?" required><br>
+
+        <label for="physicalActivity">How often do you engage in physical activity?</label>
+        <input type="text" id="physicalActivity" name="how_often_do_you_engage_in_physical_activity?" required><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+        
+
+
+        
+        
+           
+        
+        
+        <div id="video-container">
+            <button class="close-button" onclick="stopMoodDetection()">×</button>
+            <img id="video" src="" alt="Video Feed">
+        </div>
+
+        <div class="chat-box" id="chat-box">
+            <h2>Chat with Us</h2>
+            <p id="chat-intro">Hi there! How can I assist you today?</p>
+            <input type="text" id="chat-input" class="chat-input" placeholder="Type your message here...">
+            <div class="result" id="result" style="display: none;">
+                <h3 id="sentiment">Sentiment Analysis Result</h3>
+                <p id="motivation"></p>
+                <a id="song" href="#" target="_blank">Play Recommended Song</a>
+            </div>
+        </div>
+    </div>
+    <header>
+        <h1>Music Playlist</h1>
+        <button id="playlist-button" class="playlist-button">Show Playlist</button>
+    </header>
+    <div id="playlist-container" class="playlist-container">
+        <button id="close-playlist" class="close-button">&times;</button>
+        <h2>My Playlist</h2>
+        <ul id="playlist"></ul>
+    </div>
+
+    <script>
+        let videoStreamStarted = false;
+
+        function startMoodDetection() {
+            if (!videoStreamStarted) {
+                document.getElementById('video-container').style.display = 'block';
+                document.getElementById('video').src = '/video_feed';
+                videoStreamStarted = true;
+            }
+            document.getElementById('chat-box').style.display = 'none';
+        }
+
+        function stopMoodDetection() {
+            document.getElementById('video').src = '';
+            document.getElementById('video-container').style.display = 'none';
+            videoStreamStarted = false;
+        }
+
+        function analyzeSentiment() {
+            document.getElementById('chat-box').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            const chatInput = document.getElementById('chat-input');
+            chatInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    let text = chatInput.value.trim();
+                    if (text) {
+                        fetch('/analyze', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: `text=${encodeURIComponent(text)}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('sentiment').textContent = `Sentiment: ${data.sentiment}`;
+                            document.getElementById('motivation').textContent = data.response;
+                            document.getElementById('song').textContent = data.song.title;
+                            document.getElementById('song').href = data.song.url;
+                            document.getElementById('result').style.display = 'block';
+                            chatInput.value = '';
+                        })
+                        .catch(error => console.error('Error:', error));
+                    }
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const playlistButton = document.getElementById('playlist-button');
+            const playlistContainer = document.getElementById('playlist-container');
+            const closePlaylistButton = document.getElementById('close-playlist');
+            const playlistElement = document.getElementById('playlist');
+
+            // Function to fetch and display the playlist
+            function fetchPlaylist() {
+                fetch('/playlist')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear current playlist
+                        playlistElement.innerHTML = '';
+
+                        // Add songs to playlist
+                        data.forEach(song => {
+                            const listItem = document.createElement('li');
+                            listItem.innerHTML = `<a href="${song.url}" target="_blank">${song.title}</a>`;
+                            playlistElement.appendChild(listItem);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching playlist:', error));
+            }
+
+            // Show the playlist container
+            playlistButton.addEventListener('click', () => {
+                fetchPlaylist();
+                playlistContainer.classList.add('show');
+            });
+
+            // Hide the playlist container
+            closePlaylistButton.addEventListener('click', () => {
+                playlistContainer.classList.remove('show');
+            });
+        });
+        function showForm() {
+            document.getElementById("predictionForm").style.display = "block";
+        }
+
+    </script>
+</body>
+</html>
